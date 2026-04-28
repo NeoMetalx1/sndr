@@ -31,5 +31,3 @@ typedef struct {
   sndr_type_e type;
   uint32_t    data_len;  
 } sndr_hdr_t;
-
-
