@@ -5,8 +5,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd>
-#include <cstdint>
+#include <unistd.h>
+
+#define DEFAULT_PORT 8990
 
 typedef struct {
     int fd;
@@ -19,11 +20,11 @@ int bind_socket(Socket *s);
 
 int listen_socket(Socket *s, int conn_num);
 
-int accept_socket(Socket *s, sockaddr_in *addr, socklen_t *addrlen);
+int accept_socket(Socket *s, struct sockaddr_in *addr, socklen_t *addrlen);
 
 int send_data(Socket *s, void *data, size_t data_size, int flags);
 
-int recv_data(Socket *s, const char *buffer, size_t expected_data_size, int flags);
+int recv_data(Socket *s, void *buffer, size_t expected_data_size, int flags);
 
 int close_socket(Socket *s);
 

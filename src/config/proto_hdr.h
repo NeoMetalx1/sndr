@@ -1,6 +1,8 @@
 #pragma once
 
-#include <stdint>
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 
 /*  [sndr_type_e] field of protocol header
  *

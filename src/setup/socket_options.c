@@ -31,7 +31,7 @@ int listen_socket(Socket *s, int conn_num) {
 }
 
 
-int accept_socket(Socket *s, sockaddr_in *addr, socklen_t *addrlen) {
+int accept_socket(Socket *s, struct sockaddr_in *addr, socklen_t *addrlen) {
     return accept(s->fd, (struct sockaddr *)addr, addrlen);
 }
 
@@ -49,8 +49,8 @@ int send_data(Socket *s, void *data, size_t data_size, int flags) {
 }
 
 
-int recv_data(Socket *s, const char *buffer, size_t expected_data_size, int flags) {
-    const char *ptr = buffer;
+int recv_data(Socket *s, void *buffer, size_t expected_data_size, int flags) {
+    void *ptr = (void *)buffer;
     size_t bytes_received = 0;
 
     while (bytes_received < expected_data_size) {
@@ -59,4 +59,14 @@ int recv_data(Socket *s, const char *buffer, size_t expected_data_size, int flag
         bytes_received += received;
     }
     return bytes_received;
+}
+
+
+int close_socket(Socket *s) {
+    if (s && s->fd >= 0) {
+        close(s->fd);
+        s->fd = -1;
+        return 0;
+    }
+    return -1;
 }
