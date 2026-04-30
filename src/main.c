@@ -9,7 +9,7 @@ int main () {
     int init_stat = rx_init(rx, rx_ip, port);
 
     if (init_stat == 0) {
-        printf("[+] Init Rx succesfull");
+        printf("[+] Init Rx successful\n");
     }
 
     return 0;

@@ -2,6 +2,8 @@
 
 
 int rx_init(Rx *rx, const char *ip, uint32_t port) {
+    rx = malloc(sizeof(Rx));
+
     if (init_socket(&rx->sock, ip, port) < 0) {
         perror("[ERROR] Failed to initialize Rx socket");
         return -1;
