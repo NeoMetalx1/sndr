@@ -2,7 +2,7 @@
 
 
 int rx_init(Rx *rx, const char *ip, uint32_t port) {
-    rx = malloc(sizeof(Rx));
+    if (!rx) return -1;
 
     if (init_socket(&rx->sock, ip, port) < 0) {
         perror("[ERROR] Failed to initialize Rx socket");
@@ -13,19 +13,20 @@ int rx_init(Rx *rx, const char *ip, uint32_t port) {
         perror("[ERROR] Failed to bind Rx socket");
         return -1;
     }
-                             // todo:fix
+
     if (listen_socket(&rx->sock, 2) < 0) {
-        perror("[ERROR] Failed to listen for connection in Rx socket");
+        perror("[ERROR] Failed to listen");
         return -1;
     }
+
     return 0;
 }
 
 
-int rx_accept(Rx *rx) {
-    socklen_t tx_addrlen = sizeof(rx->tx_addr);
+int rx_accept(Rx *rx, struct sockaddr_in *addr, size_t addrlen) {
+    socklen_t tx_addrlen = sizeof(addrlen);
 
-    if (accept_socket(&rx->sock, &rx->tx_addr, &tx_addrlen) < 0) {
+    if (accept_socket(&rx->sock, addr, &tx_addrlen) < 0) {
         perror("[ERROR] Failed to accept connection in Rx socket");
         return -1;
     }
@@ -38,5 +39,17 @@ int rx_recv(Rx *rx) {
         perror("[ERROR] Failed to receive data in Rx socket");
         return -1;
     }
+    return 0;
+}
+
+
+int rx_close(Rx *rx) {
+    if (!rx) return -1;
+
+    if (close_socket(&rx->sock) < 0) {
+        perror("[ERROR] Failed to close Rx socket");
+        return -1;
+    }
+
     return 0;
 }

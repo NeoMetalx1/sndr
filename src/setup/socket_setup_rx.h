@@ -12,6 +12,8 @@ typedef struct {
 
 int rx_init(Rx *rx, const char *ip, uint32_t port);
 
-int rx_accept(Rx *rx);
+int rx_accept(Rx *rx, struct sockaddr_in *addr, size_t addrlen);
 
 int rx_recv(Rx *rx);
+
+int rx_close(Rx *rx);
