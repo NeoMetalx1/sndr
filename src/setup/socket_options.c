@@ -55,7 +55,7 @@ int recv_data(Socket *s, void *buffer, size_t expected_data_size, int flags) {
 
     while (bytes_received < expected_data_size) {
         ssize_t received = recv(s->fd, ptr + bytes_received, expected_data_size - bytes_received, flags);
-        if (received < 0) return -1;
+        if (received <= 0) return -1;
         bytes_received += received;
     }
     return bytes_received;

@@ -4,7 +4,7 @@
 int main () {
     Rx rx;
 
-    const char* rx_ip = "127.0.0.1";
+    const char* rx_ip = "192.168.0.140";
     uint32_t port = DEFAULT_PORT;
     struct sockaddr_in txAddr;
 
@@ -17,7 +17,7 @@ int main () {
     }
     
     // Accept
-    if (rx_accept(&rx, &txAddr, sizeof(txAddr)) < 0) {
+    if (rx_accept(&rx, &txAddr) < 0) {
         perror("Failed to accept");
         return -1;
     } else {

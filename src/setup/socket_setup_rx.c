@@ -23,8 +23,8 @@ int rx_init(Rx *rx, const char *ip, uint32_t port) {
 }
 
 
-int rx_accept(Rx *rx, struct sockaddr_in *addr, size_t addrlen) {
-    socklen_t tx_addrlen = sizeof(addrlen);
+int rx_accept(Rx *rx, struct sockaddr_in *addr) {
+    socklen_t tx_addrlen = sizeof(*addr);
 
     if (accept_socket(&rx->sock, addr, &tx_addrlen) < 0) {
         perror("[ERROR] Failed to accept connection in Rx socket");
