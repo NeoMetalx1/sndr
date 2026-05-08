@@ -14,7 +14,9 @@
 */
 typedef enum {
    SNDR_TEST,
-   SNDR_FILE 
+   SNDR_START,
+   SNDR_FILE, 
+   SNDR_END
 } sndr_type_e;
 
 
@@ -23,14 +25,16 @@ typedef enum {
  *  0                 bits                    32
  *  v                                         v
  *  |                                         |
- *  +------+                                  +
- *  | type |                                  |
+ *  +------+------+------+------+------+------+                                  +
+ *  |    type     |                           |
  *  +-----------------------------------------+
  *  |                data_len                 |
  *  +-----------------------------------------+
  *
 */
 typedef struct {
-  sndr_type_e type;
-  uint32_t    data_len;  
+  uint8_t  type;
+  uint64_t file_len;
+  uint32_t data_len;  
+  uint64_t offset;
 } sndr_hdr_t;

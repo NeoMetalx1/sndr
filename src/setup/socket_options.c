@@ -36,6 +36,11 @@ int accept_socket(Socket *s, struct sockaddr_in *addr, socklen_t *addrlen) {
 }
 
 
+int connect_socket(Socket *s, struct sockaddr_in *addr, socklen_t *addrlen) {
+    return connect(s->fd, (struct sockaddr *)addr, addrlen);
+}
+
+
 int send_data(Socket *s, void *data, size_t data_size, int flags) {
     const char *ptr = (const char *)data;
     size_t bytes_sended = 0;
