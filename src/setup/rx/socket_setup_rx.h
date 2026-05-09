@@ -1,8 +1,6 @@
 #include "config/proto_hdr.h"
 #include "setup/socket_options.h"
 
-#define DEFAULT_CHUNK_SIZE 32767
-
 typedef struct {
     Socket sock;
     struct sockaddr_in tx_addr;  // tx sockaddr to store it after accept()

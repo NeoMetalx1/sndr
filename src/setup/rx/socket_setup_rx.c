@@ -35,11 +35,12 @@ int rx_accept(Rx *rx, struct sockaddr_in *addr) {
 
 
 int rx_recv(Rx *rx) {
-    if (recv_data(&rx->sock, rx->buffer, DEFAULT_CHUNK_SIZE, 0) < 0) {
+    int recv_bytes = recv_data(&rx->sock, rx->buffer, DEFAULT_CHUNK_SIZE, 0);
+    if (recv_bytes < 0) {
         perror("[ERROR] Failed to receive data in Rx socket");
         return -1;
     }
-    return 0;
+    return recv_bytes;
 }
 
 

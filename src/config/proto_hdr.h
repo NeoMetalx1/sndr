@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define DEFAULT_CHUNK_SIZE 32768
+#define DEFAULT_PORT 8990
+
 /*  [sndr_type_e] field of protocol header
  *
  *  Defines type that will be send

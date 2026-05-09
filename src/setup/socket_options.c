@@ -36,7 +36,7 @@ int accept_socket(Socket *s, struct sockaddr_in *addr, socklen_t *addrlen) {
 }
 
 
-int connect_socket(Socket *s, struct sockaddr_in *addr, socklen_t *addrlen) {
+int connect_socket(Socket *s, struct sockaddr_in *addr, socklen_t addrlen) {
     return connect(s->fd, (struct sockaddr *)addr, addrlen);
 }
 

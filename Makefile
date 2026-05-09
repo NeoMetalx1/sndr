@@ -3,7 +3,8 @@ CFLAGS = -Wall -Wextra -std=c11 -Isrc
 
 SRC = src/main.c \
       src/setup/socket_options.c \
-      src/setup/rx/socket_setup_rx.c
+      src/setup/rx/socket_setup_rx.c \
+	  src/setup/tx/socket_setup_tx.c
 
 OBJ = $(SRC:.c=.o)
 
