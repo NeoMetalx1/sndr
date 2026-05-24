@@ -8,12 +8,12 @@ int rx_run_test(Rx *rx, const char* ip, uint32_t port);
 int tx_run_test(Tx *tx, const char* ip, uint32_t port, void *data);
 
 int main() {
-    Rx rx;
+    //Rx rx;
     Tx tx;
     const char* rx_ip = "192.168.0.140";
   
     //int rx_result = rx_run_test(&rx, rx_ip, DEFAULT_PORT);
-    int tx_result = tx_run_test(&tx, rx_ip, DEFAULT_PORT, 123);
+    int tx_result = tx_run_test(&tx, rx_ip, DEFAULT_PORT, "hello");
 
     // printf("Rx result: %d\n", rx_result);
     printf("Tx result: %d\n", tx_result);
