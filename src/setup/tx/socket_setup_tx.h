@@ -12,6 +12,6 @@ int tx_init(Tx *tx, const char *ip, uint32_t port);
 
 int tx_connect(Tx *tx);
 
-int tx_send(Tx *tx, void *data);
+int tx_send(Tx *tx, void *data, size_t size);
 
 int tx_close(Tx *tx);

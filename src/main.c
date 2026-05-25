@@ -5,15 +5,15 @@
 #define IP_ADDR_STR_LEN 16
 
 int rx_run_test(Rx *rx, const char* ip, uint32_t port);
-int tx_run_test(Tx *tx, const char* ip, uint32_t port, void *data);
+int tx_run_test(Tx *tx, const char* ip, uint32_t port, void *data, size_t size);
 
 int main() {
     //Rx rx;
     Tx tx;
-    const char* rx_ip = "192.168.0.140";
+    const char* rx_ip = "127.0.0.1";
   
     //int rx_result = rx_run_test(&rx, rx_ip, DEFAULT_PORT);
-    int tx_result = tx_run_test(&tx, rx_ip, DEFAULT_PORT, "hello");
+    int tx_result = tx_run_test(&tx, rx_ip, DEFAULT_PORT, "hello", sizeof("hello"));
 
     // printf("Rx result: %d\n", rx_result);
     printf("Tx result: %d\n", tx_result);
@@ -51,7 +51,7 @@ int rx_run_test (Rx *rx, const char* ip, uint32_t port) {
     return 0;
 }
 
-int tx_run_test (Tx *tx, const char* ip, uint32_t port, void *data) {
+int tx_run_test (Tx *tx, const char* ip, uint32_t port, void *data, size_t size) {
 
     // Init
     if (tx_init(tx, ip, port) < 0) {
@@ -70,7 +70,7 @@ int tx_run_test (Tx *tx, const char* ip, uint32_t port, void *data) {
     }
     
     // Send
-    int bytes_sent = tx_send(tx, data);
+    int bytes_sent = tx_send(tx, data, size);
     if (bytes_sent < 0) {
         perror("Failed to send");
         return -1;

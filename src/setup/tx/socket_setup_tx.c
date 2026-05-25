@@ -21,8 +21,8 @@ int tx_connect(Tx *tx) {
 }
 
 
-int tx_send(Tx *tx, void *data) {
-    int sent_bytes = send_data(&tx->sock, data, sizeof(*data), 0);
+int tx_send(Tx *tx, void *data, size_t size) {
+    int sent_bytes = send_data(&tx->sock, data, size, 0);
     if (sent_bytes < 0) {
         perror("[ERROR] Failed to send data from Tx socket");
         return -1;
