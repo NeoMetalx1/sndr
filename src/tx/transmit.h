@@ -4,4 +4,4 @@
 #include "setup/socket_options.h"
 #include "file/file_options.h"
 
-int tx_send_file(const char *filepath);
+int tx_send_file(Socket *s, const char *filepath, uint32_t file_id, uint64_t chunk_size);
