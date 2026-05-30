@@ -27,15 +27,6 @@ typedef enum {
 
 /*  [sndr_hdr_t] header of sndr protocol
  *
-
-
-
-
-
-
-
-
-
  *
 */
 typedef struct {
