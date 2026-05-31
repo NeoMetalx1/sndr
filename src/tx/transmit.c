@@ -1,8 +1,6 @@
 #include "transmit.h"
 
-int tx_send_file(Socket *s, const char *filepath, uint32_t file_id, uint64_t chunk_size) {
-    size_t file_size = get_file_size(filepath);
-
+int tx_send_start_header(Socket *s, uint32_t file_id, uint64_t file_size, uint64_t chunk_size) {
     sndr_hdr_t start_header = {
         .type = SNDR_START,
         .id = file_id,
@@ -11,16 +9,12 @@ int tx_send_file(Socket *s, const char *filepath, uint32_t file_id, uint64_t chu
         .offset = 0
     };
     
-    // Send start header
-    send_data(s, &start_header, sizeof(sndr_hdr_t), 0);
-
-    FILE *file = fopen(filepath, "rb");
-    if (!file) {
-        perror("Failed to open file");
+    if (send_data(s, &start_header, sizeof(start_header), 0) <= 0) 
         return -1;
-    }
-    
-    // Send chunk header and chunk
+    return 0;
+}
+
+int tx_send_chunk(Socket *s, FILE *file, uint32_t file_id, uint64_t file_size, uint64_t chunk_size) {
     sndr_hdr_t chunk_header;
     uint64_t offset = 0;
 
@@ -36,23 +30,35 @@ int tx_send_file(Socket *s, const char *filepath, uint32_t file_id, uint64_t chu
         chunk_header.chunk_size = bytesRead;
         chunk_header.offset = offset;
 
-        send_data(s, &chunk_header, sizeof(sndr_hdr_t), 0);
-        send_data(s, chunk, bytesRead, 0);
+        if (send_data(s, &chunk_header, sizeof(sndr_hdr_t), 0) <= 0)
+            return -1;
+        if (send_data(s, chunk, bytesRead, 0) <= 0)
+            return -1;
 
         offset += bytesRead;
     }
-    free(chunk);   
+    free(chunk);  
+    return 0;
+}
 
-    // Send end header
-    sndr_hdr_t end_header = {
-        .type = SNDR_END,
-        .id = file_id,
-        .file_size = file_size,
-        .chunk_size = 0,
-        .offset = offset
-    };
-    send_data(s, &end_header, sizeof(sndr_hdr_t), 0);
+int tx_send_file(Socket *s, const char *filepath, uint32_t file_id, uint64_t chunk_size) {
+    size_t file_size = get_file_size(filepath);
 
-    fclose(file);
+    if (tx_send_start_header(s, file_id, file_size, chunk_size) < 0) {
+        perror("Failed to send start header");
+        return -1;
+    }
+
+    FILE *file = fopen(filepath, "rb");
+    if (!file) {
+        perror("Failed to open file");
+        return -1;
+    }
+    
+    if (tx_send_chunk(s, file, file_id, file_size, chunk_size) < 0) {
+        perror("Failed to send chunk");
+        return -1;
+    }
+
     return 0;
 }

@@ -1,11 +1,17 @@
 #include "receive.h"
 
 int rx_receive_file(Socket *s, const char *filepath) {
-    FILE *file = NULL;
+    FILE *file = fopen(filepath, "wb");
+    if(!file) {
+        perror("Failed to open file");
+        return -1;
+    }
     sndr_hdr_t header;
 
+    char buffer[DEFAULT_CHUNK_SIZE];
+
     while (1) {
-        if (recv_data(s, &header, sizeof(sndr_hdr_t), 0) <= 0) {
+        if (recv_data(s, &header, sizeof(header), 0) <= 0) {
             perror("Failed to receive data");
             return -1;
         }
@@ -19,15 +25,8 @@ int rx_receive_file(Socket *s, const char *filepath) {
                 printf("CHUNK_SIZE: %d\n", header.chunk_size);
                 printf("OFFSET: %lu\n", header.offset);
                 printf("[Opening file]\n");
-
-                file = fopen(filepath, "wb");
-                if(!file) {
-                    perror("Failed to open file");
-                    return -1;
-                }
                 break;
             }
-
             case SNDR_CHUNK: {
                 printf("---RECV HEADER ---\n");
                 printf("TYPE: SNDR_CHUNK\n");
@@ -41,24 +40,20 @@ int rx_receive_file(Socket *s, const char *filepath) {
                     return -1;
                 }
 
-                char *buffer = malloc(header.chunk_size);
-                if (!buffer) {
-                    perror("Failed to create buffer to write recv data");
+                if (header.chunk_size > DEFAULT_CHUNK_SIZE) {
+                    perror("Chunk size too big");
                     return -1;
                 }
 
                 if (recv_data(s, buffer, header.chunk_size, 0) <= 0) {
                     perror("Failed to recv chunk");
-                    free(buffer);
                     return -1;
                 }
 
-                fseek(file, header.offset, SEEK_SET);
                 int writeBytes = fwrite(buffer, 1, header.chunk_size, file);
 
                 printf("Write to file: %d bytes\n", writeBytes);
 
-                free(buffer);
                 break;
             } 
 
