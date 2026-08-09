@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
 
 
     if (strcmp(argv[1], "-t") == 0) {
-        init_socket(&s_tx, "127.0.0.1", 8990);
+        init_socket(&s_tx, "192.168.88.248", 8990);
         connect_socket(&s_tx, &s_tx.addr, sizeof(s_tx.addr));
         if(tx_send_file(&s_tx, argv[2], 1, 16000) < 0) {
             perror("Failed to transmit file");
@@ -20,12 +20,11 @@ int main(int argc, char** argv) {
     }
 
     if (strcmp(argv[1], "-r") == 0) {
-        init_socket(&s_rx, "127.0.0.1", 8990);
+        init_socket(&s_rx, "192.168.88.248", 8990);
         bind_socket(&s_rx);
-        listen_socket(&s_rx, 1);
+        if (listen_socket(&s_rx, 2) < 0) perror("Failed to listen");
         socklen_t tx_addr_size = sizeof(tx_addr);
-        int tx_fd = accept_socket(&s_rx, &tx_addr, &tx_addr_size);
-        s_tx.fd = tx_fd;
+        s_tx.fd = accept_socket(&s_rx, &tx_addr, &tx_addr_size);
         if(rx_receive_file(&s_tx, argv[2]) < 0) {
             perror("Failed to recv file");
             return -1;

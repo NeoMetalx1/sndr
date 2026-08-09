@@ -14,6 +14,20 @@ int tx_send_start_header(Socket *s, uint32_t file_id, uint64_t file_size, uint64
     return 0;
 }
 
+int tx_send_end_header(Socket *s, uint32_t file_id, uint64_t file_size, uint64_t chunk_size) {
+    sndr_hdr_t end_header = {
+        .type = SNDR_END,
+        .id = file_id,
+        .file_size = file_size,
+        .chunk_size = chunk_size,
+        .offset = 0
+    };
+
+    if (send_data(s, &end_header, sizeof(end_header), 0) <= 0) {
+        return -1;
+    }
+}
+
 int tx_send_chunk(Socket *s, FILE *file, uint32_t file_id, uint64_t file_size, uint64_t chunk_size) {
     sndr_hdr_t chunk_header;
     uint64_t offset = 0;
@@ -57,6 +71,11 @@ int tx_send_file(Socket *s, const char *filepath, uint32_t file_id, uint64_t chu
     
     if (tx_send_chunk(s, file, file_id, file_size, chunk_size) < 0) {
         perror("Failed to send chunk");
+        return -1;
+    }
+
+    if (tx_send_end_header(s, file_id, file_size, chunk_size) < 0) {
+        perror("Failed to send end header");
         return -1;
     }
 

@@ -61,6 +61,8 @@ int rx_receive_file(Socket *s, const char *filepath) {
                 printf("---RECV HEADER ---\n");   
                 printf("TYPE: SNDR_END\n"); 
 
+                printf("END OF TRANSMIT\n");
+
                 if (file) fclose(file);
                 return 0;
             }
