@@ -31,13 +31,18 @@ int listen_socket(Socket *s, int conn_num) {
 }
 
 
-int accept_socket(Socket *s, sockaddr_in *addr, socklen_t *addrlen) {
+int accept_socket(Socket *s, struct sockaddr_in *addr, socklen_t *addrlen) {
     return accept(s->fd, (struct sockaddr *)addr, addrlen);
 }
 
 
+int connect_socket(Socket *s, struct sockaddr_in *addr, socklen_t addrlen) {
+    return connect(s->fd, (struct sockaddr *)addr, addrlen);
+}
+
+
 int send_data(Socket *s, void *data, size_t data_size, int flags) {
-    const char *ptr = (const char *)data;
+    char *ptr = (char *)data;
     size_t bytes_sended = 0;
 
     while(bytes_sended < data_size) {
@@ -49,14 +54,24 @@ int send_data(Socket *s, void *data, size_t data_size, int flags) {
 }
 
 
-int recv_data(Socket *s, const char *buffer, size_t expected_data_size, int flags) {
-    const char *ptr = buffer;
+int recv_data(Socket *s, void *buffer, size_t size, int flags) {
+    char *ptr = (char *)buffer;
     size_t bytes_received = 0;
 
-    while (bytes_received < expected_data_size) {
-        ssize_t received = recv(s->fd, ptr + bytes_received, expected_data_size - bytes_received, flags);
-        if (received < 0) return -1;
+    while (bytes_received < size) {
+        ssize_t received = recv(s->fd, ptr + bytes_received, size - bytes_received, flags);
+        if (received <= 0) return -1;
         bytes_received += received;
     }
     return bytes_received;
+}
+
+
+int close_socket(Socket *s) {
+    if (s && s->fd >= 0) {
+        close(s->fd);
+        s->fd = -1;
+        return 0;
+    }
+    return -1;
 }
